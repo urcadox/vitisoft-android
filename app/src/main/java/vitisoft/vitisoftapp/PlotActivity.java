@@ -5,24 +5,20 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -35,18 +31,18 @@ import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
 
 import javax.net.ssl.HttpsURLConnection;
 
 import vitisoft.vitisoftapp.models.entities.Plot;
-import vitisoft.vitisoftapp.views.RVAdapter;
+import vitisoft.vitisoftapp.views.AuditListRecyclerViewAdapter;
+import vitisoft.vitisoftapp.views.PlotListRecyclerViewAdapter;
 
 public class PlotActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     public GoogleMap map;
     public LinkedList<LatLng> polygonCoordinates;
+    public String plotId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,12 +51,23 @@ public class PlotActivity extends AppCompatActivity implements OnMapReadyCallbac
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        Intent intent = getIntent();
+        plotId = intent.getStringExtra(Consts.PLOT_ID);
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setImageResource(R.drawable.ic_add_white_48px);
+        fab.setBackgroundColor(Color.GREEN);
+        fab.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(view.getContext(), AuditFormActivity.class);
+                intent.putExtra(Consts.PLOT_ID, plotId.toString());
+                view.getContext().startActivity(intent);
+            }
+        });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         getSupportActionBar().setTitle("Parcelle");
-        Intent intent = getIntent();
-        String plotId = intent.getStringExtra(Consts.PLOT_ID);
 
         String url = "https://vitisoft.cleverapps.io/api/plots/" + plotId;
         new RetrievePlotTask().execute(url);
@@ -124,6 +131,12 @@ public class PlotActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 showPolygonOnMap();
 
+                RecyclerView rv = (RecyclerView)findViewById(R.id.auditsRV);
+                LinearLayoutManager llm = new LinearLayoutManager(getApplicationContext());
+                rv.setLayoutManager(llm);
+
+                AuditListRecyclerViewAdapter adapter = new AuditListRecyclerViewAdapter(plot.audits, R.layout.auditcardview);
+                rv.setAdapter(adapter);
             }
         }
     }
@@ -137,7 +150,6 @@ public class PlotActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public void showPolygonOnMap() {
         if (map != null && polygonCoordinates != null) {
-            Log.e("plop", "got map and polygon");
             PolygonOptions polygon = new PolygonOptions()
                 .addAll(polygonCoordinates)
                 .fillColor(Color.argb(20, 0, 170, 0))

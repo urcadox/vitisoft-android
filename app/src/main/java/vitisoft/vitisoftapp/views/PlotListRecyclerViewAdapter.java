@@ -16,7 +16,7 @@ import vitisoft.vitisoftapp.PlotActivity;
 import vitisoft.vitisoftapp.R;
 import vitisoft.vitisoftapp.models.entities.Plot;
 
-public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PlotViewHolder> {
+public class PlotListRecyclerViewAdapter extends RecyclerView.Adapter<PlotListRecyclerViewAdapter.PlotViewHolder> {
 
     public static class PlotViewHolder extends RecyclerView.ViewHolder {
         CardView cv;
@@ -43,7 +43,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PlotViewHolder> {
 
     List<Plot> plots;
     int itemLayout;
-    public RVAdapter(List<Plot> plots, int itemLayout) {
+    public PlotListRecyclerViewAdapter(List<Plot> plots, int itemLayout) {
         this.plots = plots;
         this.itemLayout = itemLayout;
     }
