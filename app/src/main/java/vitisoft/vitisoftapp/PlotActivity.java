@@ -55,11 +55,19 @@ public class PlotActivity extends AppCompatActivity implements OnMapReadyCallbac
         plotId = intent.getStringExtra(Consts.PLOT_ID);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setImageResource(R.drawable.ic_add_white_48px);
+        fab.setBackgroundColor(Color.GREEN);
+        fab.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(view.getContext(), AuditFormActivity.class);
+                intent.putExtra(Consts.PLOT_ID, plotId.toString());
+                view.getContext().startActivity(intent);
+            }
+        });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         getSupportActionBar().setTitle("Parcelle");
-        Intent intent = getIntent();
-        String plotId = intent.getStringExtra(Consts.PLOT_ID);
 
         String url = "https://vitisoft.cleverapps.io/api/plots/" + plotId;
         new RetrievePlotTask().execute(url);
