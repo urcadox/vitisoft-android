@@ -9,6 +9,6 @@ public class PlotMeasurement {
     public UUID id;
     public UUID plotAuditId;
     public MeasuredItem item;
-    public Gson value;
+    public String value;
     public Date timestamp;
 }

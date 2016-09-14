@@ -23,7 +23,7 @@ import java.util.List;
 import javax.net.ssl.HttpsURLConnection;
 
 import vitisoft.vitisoftapp.models.entities.Plot;
-import vitisoft.vitisoftapp.views.RVAdapter;
+import vitisoft.vitisoftapp.views.PlotListRecyclerViewAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
                 LinearLayoutManager llm = new LinearLayoutManager(getApplicationContext());
                 rv.setLayoutManager(llm);
 
-                RVAdapter adapter = new RVAdapter(plots, R.layout.cardview);
+                PlotListRecyclerViewAdapter adapter = new PlotListRecyclerViewAdapter(plots, R.layout.plotcardview);
                 rv.setAdapter(adapter);
             }
         }
