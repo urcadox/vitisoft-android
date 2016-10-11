@@ -2,19 +2,28 @@ package vitisoft.vitisoftapp;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.appindexing.Thing;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -40,17 +49,26 @@ import vitisoft.vitisoftapp.models.entities.Plot;
 import vitisoft.vitisoftapp.views.AuditListRecyclerViewAdapter;
 import vitisoft.vitisoftapp.views.PlotListRecyclerViewAdapter;
 
+import static android.R.attr.bitmap;
+
 public class PlotActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     public GoogleMap map;
     public LinkedList<LatLng> polygonCoordinates;
     public String plotId;
+    public CollapsingToolbarLayout collapsingToolbar;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_plot);
         Toolbar toolbar = (Toolbar) findViewById(R.id.anim_toolbar);
+        collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         setSupportActionBar(toolbar);
 
         Intent intent = getIntent();
@@ -59,7 +77,7 @@ public class PlotActivity extends AppCompatActivity implements OnMapReadyCallbac
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setImageResource(R.drawable.ic_add_white_48px);
         fab.setBackgroundColor(Color.GREEN);
-        fab.setOnClickListener(new View.OnClickListener(){
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(view.getContext(), AuditFormActivity.class);
@@ -70,12 +88,53 @@ public class PlotActivity extends AppCompatActivity implements OnMapReadyCallbac
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         getSupportActionBar().setTitle("Parcelle");
+        collapsingToolbar.setTitle("Parcelle");
+
 
         String url = "https://vitisoft.cleverapps.io/api/plots/" + plotId;
         new RetrievePlotTask().execute(url);
 
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.plot_map);
         mapFragment.getMapAsync(this);
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+    }
+
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    public Action getIndexApiAction() {
+        Thing object = new Thing.Builder()
+                .setName("Plot Page") // TODO: Define a title for the content shown.
+                // TODO: Make sure this auto-generated URL is correct.
+                .setUrl(Uri.parse("http://[ENTER-YOUR-URL-HERE]"))
+                .build();
+        return new Action.Builder(Action.TYPE_VIEW)
+                .setObject(object)
+                .setActionStatus(Action.STATUS_TYPE_COMPLETED)
+                .build();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        AppIndex.AppIndexApi.start(client, getIndexApiAction());
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        AppIndex.AppIndexApi.end(client, getIndexApiAction());
+        client.disconnect();
     }
 
     class RetrievePlotTask extends AsyncTask<String, Void, String> {
@@ -91,27 +150,26 @@ public class PlotActivity extends AppCompatActivity implements OnMapReadyCallbac
                     String rawData = IOUtils.toString(reader);
                     IOUtils.closeQuietly(reader);
                     return rawData;
-                }
-                catch(IOException e) {
+                } catch (IOException e) {
                     Log.e("vitisoft IO error", e.getMessage());
                     e.printStackTrace();
                     runOnUiThread(new Runnable() {
-                      @Override
-                      public void run() {
-                          Toast.makeText(getApplicationContext(), "Erreur réseau", Toast.LENGTH_LONG).show();
-                      }
-                     });
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "Erreur réseau", Toast.LENGTH_LONG).show();
+                        }
+                    });
                     return null;
                 } finally {
-                    if(urlConnection != null) {
+                    if (urlConnection != null) {
                         urlConnection.disconnect();
                     }
                 }
-            } catch(MalformedURLException e) {
+            } catch (MalformedURLException e) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                      Toast.makeText(getApplicationContext(), "URL invalide", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "URL invalide", Toast.LENGTH_LONG).show();
                     }
                 });
                 return null;
@@ -119,23 +177,25 @@ public class PlotActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
         protected void onPostExecute(String rawData) {
-            if(rawData != null) {
+            if (rawData != null) {
                 Gson gson = new Gson();
-                Type plotType = new TypeToken<Plot>(){}.getType();
+                Type plotType = new TypeToken<Plot>() {
+                }.getType();
                 Plot plot = gson.fromJson(rawData, plotType);
 
                 getSupportActionBar().setTitle(plot.name);
+                collapsingToolbar.setTitle(plot.name);
 
                 new RetrievePlotPictureTask().execute(plot.pictureUrl);
 
                 polygonCoordinates = new LinkedList();
-                for(int i = 0; i < plot.position.length; i++) {
+                for (int i = 0; i < plot.position.length; i++) {
                     polygonCoordinates.add(new LatLng(plot.position[i][1], plot.position[i][0]));
                 }
 
                 showPolygonOnMap();
 
-                RecyclerView rv = (RecyclerView)findViewById(R.id.auditsRV);
+                RecyclerView rv = (RecyclerView) findViewById(R.id.auditsRV);
                 LinearLayoutManager llm = new LinearLayoutManager(getApplicationContext());
                 rv.setLayoutManager(llm);
 
@@ -151,8 +211,7 @@ public class PlotActivity extends AppCompatActivity implements OnMapReadyCallbac
                 URL pictureURL = new URL(url[0]);
                 try {
                     return Tools.drawableFromUrl(pictureURL.toString());
-                }
-                catch(IOException e) {
+                } catch (IOException e) {
                     Log.e("vitisoft IO error", e.getMessage());
                     e.printStackTrace();
                     runOnUiThread(new Runnable() {
@@ -163,7 +222,7 @@ public class PlotActivity extends AppCompatActivity implements OnMapReadyCallbac
                     });
                     return null;
                 }
-            } catch(MalformedURLException e) {
+            } catch (MalformedURLException e) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -175,9 +234,18 @@ public class PlotActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
         protected void onPostExecute(Drawable picture) {
-            if(picture != null) {
-                ImageView header = (ImageView)findViewById(R.id.header);
+            if (picture != null) {
+                ImageView header = (ImageView) findViewById(R.id.header);
                 header.setBackground(picture);
+                BitmapDrawable bitmap = (BitmapDrawable) picture;
+                Palette.from(bitmap.getBitmap()).generate(new Palette.PaletteAsyncListener() {
+                    @Override
+                    public void onGenerated(Palette palette) {
+                        collapsingToolbar.setContentScrimColor(palette.getVibrantColor(R.attr.colorPrimary));
+                        Window window = getWindow();
+                        window.setStatusBarColor(palette.getDarkVibrantColor(R.attr.colorPrimary));
+                    }
+                });
             }
         }
     }
@@ -192,10 +260,10 @@ public class PlotActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void showPolygonOnMap() {
         if (map != null && polygonCoordinates != null) {
             PolygonOptions polygon = new PolygonOptions()
-                .addAll(polygonCoordinates)
-                .fillColor(Color.argb(20, 0, 170, 0))
-                .strokeColor(Color.argb(80, 0, 255, 0))
-                .strokeWidth(5);
+                    .addAll(polygonCoordinates)
+                    .fillColor(Color.argb(20, 0, 170, 0))
+                    .strokeColor(Color.argb(80, 0, 255, 0))
+                    .strokeWidth(5);
             map.addPolygon(polygon);
             LatLngBounds.Builder builder = new LatLngBounds.Builder();
             for (LatLng latlng : polygonCoordinates) {
