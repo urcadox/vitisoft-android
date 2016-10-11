@@ -50,9 +50,8 @@ public class NFCTagScanned extends AppCompatActivity {
     }
 
     protected void loadWebViewFromPlotId(String plotId) {
-        Intent intent = new Intent(this, WebViewActivity.class);
-        String message = "https://vitisoft.cleverapps.io/plots/" + plotId;
-        intent.putExtra(Consts.URL_MESSAGE, message);
+        Intent intent = new Intent(this, PlotActivity.class);
+        intent.putExtra(Consts.PLOT_ID, plotId);
         startActivity(intent);
     }
 }

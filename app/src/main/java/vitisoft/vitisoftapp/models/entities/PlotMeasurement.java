@@ -2,10 +2,11 @@ package vitisoft.vitisoftapp.models.entities;
 
 import com.google.gson.Gson;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
 
-public class PlotMeasurement {
+public class PlotMeasurement implements Serializable {
     public UUID id;
     public UUID plotAuditId;
     public MeasuredItem item;

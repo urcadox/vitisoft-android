@@ -13,6 +13,8 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.UUID;
 
+import vitisoft.vitisoftapp.Consts;
+import vitisoft.vitisoftapp.PlotAuditActivity;
 import vitisoft.vitisoftapp.R;
 import vitisoft.vitisoftapp.models.entities.PlotAudit;
 
@@ -22,7 +24,7 @@ public class AuditListRecyclerViewAdapter extends RecyclerView.Adapter<AuditList
         CardView cv;
         TextView auditTitle;
         TextView auditNumberOfMeasures;
-        UUID auditId;
+        PlotAudit audit;
 
         AuditViewHolder(View itemView) {
             super(itemView);
@@ -33,9 +35,9 @@ public class AuditListRecyclerViewAdapter extends RecyclerView.Adapter<AuditList
             cv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    //Intent intent = new Intent(cv.getContext(), PlotActivity.class);
-                    //intent.putExtra(Consts.PLOT_ID, plotId.toString());
-                    //cv.getContext().startActivity(intent);
+                Intent intent = new Intent(cv.getContext(), PlotAuditActivity.class);
+                intent.putExtra(Consts.PLOTAUDIT, audit);
+                cv.getContext().startActivity(intent);
                 }
             });
         }
@@ -65,7 +67,7 @@ public class AuditListRecyclerViewAdapter extends RecyclerView.Adapter<AuditList
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         auditViewHolder.auditTitle.setText("Audit du " + df.format(audits.get(i).date));
         auditViewHolder.auditNumberOfMeasures.setText(audits.get(i).measurements.size() + " mesures");
-        auditViewHolder.auditId = audits.get(i).id;
+        auditViewHolder.audit = audits.get(i);
     }
 
     @Override

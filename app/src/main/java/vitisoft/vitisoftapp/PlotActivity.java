@@ -2,6 +2,7 @@ package vitisoft.vitisoftapp;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -11,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -48,7 +50,7 @@ public class PlotActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_plot);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.anim_toolbar);
         setSupportActionBar(toolbar);
 
         Intent intent = getIntent();
@@ -124,6 +126,8 @@ public class PlotActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 getSupportActionBar().setTitle(plot.name);
 
+                new RetrievePlotPictureTask().execute(plot.pictureUrl);
+
                 polygonCoordinates = new LinkedList();
                 for(int i = 0; i < plot.position.length; i++) {
                     polygonCoordinates.add(new LatLng(plot.position[i][1], plot.position[i][0]));
@@ -137,6 +141,43 @@ public class PlotActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 AuditListRecyclerViewAdapter adapter = new AuditListRecyclerViewAdapter(plot.audits, R.layout.auditcardview);
                 rv.setAdapter(adapter);
+            }
+        }
+    }
+
+    class RetrievePlotPictureTask extends AsyncTask<String, Void, Drawable> {
+        protected Drawable doInBackground(String... url) {
+            try {
+                URL pictureURL = new URL(url[0]);
+                try {
+                    return Tools.drawableFromUrl(pictureURL.toString());
+                }
+                catch(IOException e) {
+                    Log.e("vitisoft IO error", e.getMessage());
+                    e.printStackTrace();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "Erreur réseau", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                    return null;
+                }
+            } catch(MalformedURLException e) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getApplicationContext(), "URL invalide", Toast.LENGTH_LONG).show();
+                    }
+                });
+                return null;
+            }
+        }
+
+        protected void onPostExecute(Drawable picture) {
+            if(picture != null) {
+                ImageView header = (ImageView)findViewById(R.id.header);
+                header.setBackground(picture);
             }
         }
     }

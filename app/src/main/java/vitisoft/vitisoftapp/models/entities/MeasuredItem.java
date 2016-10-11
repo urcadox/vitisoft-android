@@ -1,5 +1,7 @@
 package vitisoft.vitisoftapp.models.entities;
 
-public enum MeasuredItem {
+import java.io.Serializable;
+
+public enum MeasuredItem implements Serializable {
     Temperature, Weather, Humidity, Pesticide, Picture
 }
