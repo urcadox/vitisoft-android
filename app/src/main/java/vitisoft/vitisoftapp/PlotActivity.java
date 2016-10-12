@@ -48,6 +48,7 @@ import javax.net.ssl.HttpsURLConnection;
 import vitisoft.vitisoftapp.models.entities.Plot;
 import vitisoft.vitisoftapp.views.AuditListRecyclerViewAdapter;
 import vitisoft.vitisoftapp.views.PlotListRecyclerViewAdapter;
+import vitisoft.vitisoftapp.tasks.RetrievePlotPictureTask;
 
 import static android.R.attr.bitmap;
 
@@ -186,7 +187,7 @@ public class PlotActivity extends AppCompatActivity implements OnMapReadyCallbac
                 getSupportActionBar().setTitle(plot.name);
                 collapsingToolbar.setTitle(plot.name);
 
-                new RetrievePlotPictureTask().execute(plot.pictureUrl);
+                new RetrievePlotPictureTask(PlotActivity.this, getWindow(), collapsingToolbar).execute(plot.pictureUrl);
 
                 polygonCoordinates = new LinkedList();
                 for (int i = 0; i < plot.position.length; i++) {
@@ -201,51 +202,6 @@ public class PlotActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 AuditListRecyclerViewAdapter adapter = new AuditListRecyclerViewAdapter(plot.audits, R.layout.auditcardview);
                 rv.setAdapter(adapter);
-            }
-        }
-    }
-
-    class RetrievePlotPictureTask extends AsyncTask<String, Void, Drawable> {
-        protected Drawable doInBackground(String... url) {
-            try {
-                URL pictureURL = new URL(url[0]);
-                try {
-                    return Tools.drawableFromUrl(pictureURL.toString());
-                } catch (IOException e) {
-                    Log.e("vitisoft IO error", e.getMessage());
-                    e.printStackTrace();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(getApplicationContext(), "Erreur réseau", Toast.LENGTH_LONG).show();
-                        }
-                    });
-                    return null;
-                }
-            } catch (MalformedURLException e) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(getApplicationContext(), "URL invalide", Toast.LENGTH_LONG).show();
-                    }
-                });
-                return null;
-            }
-        }
-
-        protected void onPostExecute(Drawable picture) {
-            if (picture != null) {
-                ImageView header = (ImageView) findViewById(R.id.header);
-                header.setBackground(picture);
-                BitmapDrawable bitmap = (BitmapDrawable) picture;
-                Palette.from(bitmap.getBitmap()).generate(new Palette.PaletteAsyncListener() {
-                    @Override
-                    public void onGenerated(Palette palette) {
-                        collapsingToolbar.setContentScrimColor(palette.getVibrantColor(R.attr.colorPrimary));
-                        Window window = getWindow();
-                        window.setStatusBarColor(palette.getDarkVibrantColor(R.attr.colorPrimary));
-                    }
-                });
             }
         }
     }
