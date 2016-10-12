@@ -6,11 +6,19 @@ android {
 
     defaultConfig {
         applicationId "vitisoft.vitisoftapp"
-        minSdkVersion 23
+        minSdkVersion 24
         targetSdkVersion 24
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
+        jackOptions {
+            enabled true
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     buildTypes {
