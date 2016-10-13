@@ -8,6 +8,8 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -82,6 +84,10 @@ public class MainActivity extends AppCompatActivity {
                 RecyclerView rv = (RecyclerView)findViewById(R.id.rv);
                 LinearLayoutManager llm = new LinearLayoutManager(getApplicationContext());
                 rv.setLayoutManager(llm);
+
+                for(Plot p : plots) {
+                    Glide.with(MainActivity.this).load(p.pictureUrl).diskCacheStrategy(DiskCacheStrategy.SOURCE).preload();
+                }
 
                 PlotListRecyclerViewAdapter adapter = new PlotListRecyclerViewAdapter(plots, R.layout.plotcardview);
                 rv.setAdapter(adapter);

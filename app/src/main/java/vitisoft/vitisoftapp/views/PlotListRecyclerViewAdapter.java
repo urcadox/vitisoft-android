@@ -23,6 +23,7 @@ public class PlotListRecyclerViewAdapter extends RecyclerView.Adapter<PlotListRe
         TextView plotName;
         TextView plotNumberOfAudits;
         UUID plotId;
+        Plot plot;
 
         PlotViewHolder(View itemView) {
             super(itemView);
@@ -35,6 +36,7 @@ public class PlotListRecyclerViewAdapter extends RecyclerView.Adapter<PlotListRe
                 public void onClick(View view) {
                     Intent intent = new Intent(cv.getContext(), PlotActivity.class);
                     intent.putExtra(Consts.PLOT_ID, plotId.toString());
+                    intent.putExtra(Consts.PLOT, plot);
                     cv.getContext().startActivity(intent);
                 }
             });
@@ -65,6 +67,7 @@ public class PlotListRecyclerViewAdapter extends RecyclerView.Adapter<PlotListRe
         plotViewHolder.plotName.setText(plots.get(i).name);
         plotViewHolder.plotNumberOfAudits.setText(plots.get(i).audits.size() + " audits");
         plotViewHolder.plotId = plots.get(i).id;
+        plotViewHolder.plot = plots.get(i);
     }
 
     @Override

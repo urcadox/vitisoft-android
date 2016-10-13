@@ -1,9 +1,8 @@
 package vitisoft.vitisoftapp;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -15,11 +14,14 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
-import android.view.Window;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
@@ -47,10 +49,6 @@ import javax.net.ssl.HttpsURLConnection;
 
 import vitisoft.vitisoftapp.models.entities.Plot;
 import vitisoft.vitisoftapp.views.AuditListRecyclerViewAdapter;
-import vitisoft.vitisoftapp.views.PlotListRecyclerViewAdapter;
-import vitisoft.vitisoftapp.tasks.RetrievePlotPictureTask;
-
-import static android.R.attr.bitmap;
 
 public class PlotActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -58,6 +56,7 @@ public class PlotActivity extends AppCompatActivity implements OnMapReadyCallbac
     public LinkedList<LatLng> polygonCoordinates;
     public String plotId;
     public CollapsingToolbarLayout collapsingToolbar;
+    public Plot plot;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -74,6 +73,7 @@ public class PlotActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         Intent intent = getIntent();
         plotId = intent.getStringExtra(Consts.PLOT_ID);
+        plot = (Plot) intent.getSerializableExtra(Consts.PLOT);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setImageResource(R.drawable.ic_add_white_48px);
@@ -91,9 +91,12 @@ public class PlotActivity extends AppCompatActivity implements OnMapReadyCallbac
         getSupportActionBar().setTitle("Parcelle");
         collapsingToolbar.setTitle("Parcelle");
 
-
-        String url = "https://vitisoft.cleverapps.io/api/plots/" + plotId;
-        new RetrievePlotTask().execute(url);
+        if(plot != null) {
+            displayPlot(plot);
+        } else {
+            String url = "https://vitisoft.cleverapps.io/api/plots/" + plotId;
+            new RetrievePlotTask().execute(url);
+        }
 
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.plot_map);
         mapFragment.getMapAsync(this);
@@ -184,26 +187,45 @@ public class PlotActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }.getType();
                 Plot plot = gson.fromJson(rawData, plotType);
 
-                getSupportActionBar().setTitle(plot.name);
-                collapsingToolbar.setTitle(plot.name);
-
-                new RetrievePlotPictureTask(PlotActivity.this, getWindow(), collapsingToolbar).execute(plot.pictureUrl);
-
-                polygonCoordinates = new LinkedList();
-                for (int i = 0; i < plot.position.length; i++) {
-                    polygonCoordinates.add(new LatLng(plot.position[i][1], plot.position[i][0]));
-                }
-
-                showPolygonOnMap();
-
-                RecyclerView rv = (RecyclerView) findViewById(R.id.auditsRV);
-                LinearLayoutManager llm = new LinearLayoutManager(getApplicationContext());
-                rv.setLayoutManager(llm);
-
-                AuditListRecyclerViewAdapter adapter = new AuditListRecyclerViewAdapter(plot.audits, R.layout.auditcardview);
-                rv.setAdapter(adapter);
+                displayPlot(plot);
             }
         }
+    }
+
+    private void displayPlot(Plot plot) {
+        getSupportActionBar().setTitle(plot.name);
+        collapsingToolbar.setTitle(plot.name);
+
+        ImageView header = (ImageView) findViewById(R.id.header);
+        Glide.with(PlotActivity.this).load(plot.pictureUrl).asBitmap().into(new BitmapImageViewTarget(header) {
+            @Override
+            public void onResourceReady(Bitmap bitmap, GlideAnimation anim) {
+                super.onResourceReady(bitmap, anim);
+                Palette.generateAsync(bitmap, new Palette.PaletteAsyncListener() {
+                    @Override
+                    public void onGenerated(Palette palette) {
+                        if(collapsingToolbar != null) {
+                            collapsingToolbar.setContentScrimColor(palette.getVibrantColor(R.attr.colorPrimary));
+                        }
+                        getWindow().setStatusBarColor(palette.getVibrantColor(R.attr.colorPrimary));
+                    }
+                });
+            }
+        });
+
+        polygonCoordinates = new LinkedList<>();
+        for (int i = 0; i < plot.position.length; i++) {
+            polygonCoordinates.add(new LatLng(plot.position[i][1], plot.position[i][0]));
+        }
+
+        showPolygonOnMap();
+
+        RecyclerView rv = (RecyclerView) findViewById(R.id.auditsRV);
+        LinearLayoutManager llm = new LinearLayoutManager(getApplicationContext());
+        rv.setLayoutManager(llm);
+
+        AuditListRecyclerViewAdapter adapter = new AuditListRecyclerViewAdapter(plot.audits, R.layout.auditcardview);
+        rv.setAdapter(adapter);
     }
 
     @Override
@@ -226,7 +248,12 @@ public class PlotActivity extends AppCompatActivity implements OnMapReadyCallbac
                 builder.include(latlng);
             }
             LatLngBounds bounds = builder.build();
-            map.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 300));
+            int width = getResources().getDisplayMetrics().widthPixels;
+            int height = Math.round(TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP, 300, getResources().getDisplayMetrics()
+            ));
+            int padding = (int) (width * 0.12);
+            map.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding));
         }
     }
 
