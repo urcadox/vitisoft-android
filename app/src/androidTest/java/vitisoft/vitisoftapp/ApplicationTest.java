@@ -1,4 +1,4 @@
-package vitisoft.vitisoftapp;
+package wineplotstracker.wineplotstrackerapp;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

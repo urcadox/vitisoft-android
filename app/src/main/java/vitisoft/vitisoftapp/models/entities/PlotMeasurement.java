@@ -1,4 +1,4 @@
-package vitisoft.vitisoftapp.models.entities;
+package wineplotstracker.wineplotstrackerapp.models.entities;
 
 import com.google.gson.Gson;
 

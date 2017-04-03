@@ -1,11 +1,11 @@
-package vitisoft.vitisoftapp;
+package wineplotstracker.wineplotstrackerapp;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 
-import vitisoft.vitisoftapp.models.entities.PlotAudit;
+import wineplotstracker.wineplotstrackerapp.models.entities.PlotAudit;
 
 public class PlotAuditActivity extends AppCompatActivity {
 

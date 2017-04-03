@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="vitisoft.vitisoftapp.PlotActivity"
+    tools:context="wineplotstracker.wineplotstrackerapp.PlotActivity"
     tools:showIn="@layout/activity_plot"
     android:fitsSystemWindows="true">
     <android.support.design.widget.AppBarLayout

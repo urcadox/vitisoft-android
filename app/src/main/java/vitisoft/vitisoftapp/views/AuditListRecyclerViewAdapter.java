@@ -1,4 +1,4 @@
-package vitisoft.vitisoftapp.views;
+package wineplotstracker.wineplotstrackerapp.views;
 
 import android.content.Intent;
 import android.support.v7.widget.CardView;
@@ -13,10 +13,10 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.UUID;
 
-import vitisoft.vitisoftapp.Consts;
-import vitisoft.vitisoftapp.PlotAuditActivity;
-import vitisoft.vitisoftapp.R;
-import vitisoft.vitisoftapp.models.entities.PlotAudit;
+import wineplotstracker.wineplotstrackerapp.Consts;
+import wineplotstracker.wineplotstrackerapp.PlotAuditActivity;
+import wineplotstracker.wineplotstrackerapp.R;
+import wineplotstracker.wineplotstrackerapp.models.entities.PlotAudit;
 
 public class AuditListRecyclerViewAdapter extends RecyclerView.Adapter<AuditListRecyclerViewAdapter.AuditViewHolder> {
 

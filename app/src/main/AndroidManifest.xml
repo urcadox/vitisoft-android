@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="vitisoft.vitisoftapp">
+    package="wineplotstracker.wineplotstrackerapp">
 
     <uses-permission android:name="android.permission.NFC" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -35,7 +35,7 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
 
-                <data android:scheme="vitisoft" />
+                <data android:scheme="wineplotstracker" />
             </intent-filter>
         </activity>
         <activity android:name=".WebViewActivity" />
@@ -46,7 +46,7 @@
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="vitisoft.vitisoftapp.MainActivity" />
+                android:value="wineplotstracker.wineplotstrackerapp.MainActivity" />
         </activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -70,7 +70,7 @@
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="vitisoft.vitisoftapp.MainActivity" />
+                android:value="wineplotstracker.wineplotstrackerapp.MainActivity" />
         </activity>
         <activity android:name=".PlotAuditActivity"></activity><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
      App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->

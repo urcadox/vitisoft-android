@@ -1,4 +1,4 @@
-package vitisoft.vitisoftapp;
+package wineplotstracker.wineplotstrackerapp;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;

@@ -1,4 +1,4 @@
-package vitisoft.vitisoftapp;
+package wineplotstracker.wineplotstrackerapp;
 
 import org.junit.Test;
 

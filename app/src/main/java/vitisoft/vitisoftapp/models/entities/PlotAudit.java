@@ -1,4 +1,4 @@
-package vitisoft.vitisoftapp.models.entities;
+package wineplotstracker.wineplotstrackerapp.models.entities;
 
 import java.io.Serializable;
 import java.util.Date;

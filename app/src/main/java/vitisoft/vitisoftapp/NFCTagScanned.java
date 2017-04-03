@@ -1,4 +1,4 @@
-package vitisoft.vitisoftapp;
+package wineplotstracker.wineplotstrackerapp;
 
 import android.content.Intent;
 import android.nfc.NdefMessage;
@@ -34,7 +34,7 @@ public class NFCTagScanned extends AppCompatActivity {
                 }
                 NdefRecord record = msgs[0].getRecords()[0];
                 String rawContent = new String(record.getPayload());
-                Optional<String> plotId = Optional.ofNullable(rawContent.split("vitisoft://plots/")[1]);
+                Optional<String> plotId = Optional.ofNullable(rawContent.split("wineplotstracker://plots/")[1]);
                 if(plotId.isPresent()) {
                     loadWebViewFromPlotId(plotId.get());
                 } else {

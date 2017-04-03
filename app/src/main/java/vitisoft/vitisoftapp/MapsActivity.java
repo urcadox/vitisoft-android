@@ -1,4 +1,4 @@
-package vitisoft.vitisoftapp;
+package wineplotstracker.wineplotstrackerapp;
 
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;

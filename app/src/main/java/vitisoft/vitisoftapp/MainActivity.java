@@ -1,4 +1,4 @@
-package vitisoft.vitisoftapp;
+package wineplotstracker.wineplotstrackerapp;
 
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -24,8 +24,8 @@ import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import vitisoft.vitisoftapp.models.entities.Plot;
-import vitisoft.vitisoftapp.views.PlotListRecyclerViewAdapter;
+import wineplotstracker.wineplotstrackerapp.models.entities.Plot;
+import wineplotstracker.wineplotstrackerapp.views.PlotListRecyclerViewAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        String url = "https://vitisoft.cleverapps.io/api/plots";
+        String url = "https://wineplotstracker.cleverapps.io/api/plots";
         new RetrievePlotsTask().execute(url);
     }
 
@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
                     return rawData;
                 }
                 catch(IOException e) {
-                    Log.e("vitisoft IO error", e.getMessage());
+                    Log.e("wineplotstracker IO error", e.getMessage());
                     e.printStackTrace();
                     runOnUiThread(new Runnable() {
                         public void run() {

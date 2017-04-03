@@ -1,4 +1,4 @@
-package vitisoft.vitisoftapp;
+package wineplotstracker.wineplotstrackerapp;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -47,8 +47,8 @@ import java.util.LinkedList;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import vitisoft.vitisoftapp.models.entities.Plot;
-import vitisoft.vitisoftapp.views.AuditListRecyclerViewAdapter;
+import wineplotstracker.wineplotstrackerapp.models.entities.Plot;
+import wineplotstracker.wineplotstrackerapp.views.AuditListRecyclerViewAdapter;
 
 public class PlotActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -94,7 +94,7 @@ public class PlotActivity extends AppCompatActivity implements OnMapReadyCallbac
         if(plot != null) {
             displayPlot(plot);
         } else {
-            String url = "https://vitisoft.cleverapps.io/api/plots/" + plotId;
+            String url = "https://wineplotstracker.cleverapps.io/api/plots/" + plotId;
             new RetrievePlotTask().execute(url);
         }
 
@@ -155,7 +155,7 @@ public class PlotActivity extends AppCompatActivity implements OnMapReadyCallbac
                     IOUtils.closeQuietly(reader);
                     return rawData;
                 } catch (IOException e) {
-                    Log.e("vitisoft IO error", e.getMessage());
+                    Log.e("wineplotstracker IO error", e.getMessage());
                     e.printStackTrace();
                     runOnUiThread(new Runnable() {
                         @Override

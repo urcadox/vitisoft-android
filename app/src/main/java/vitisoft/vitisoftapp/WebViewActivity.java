@@ -1,4 +1,4 @@
-package vitisoft.vitisoftapp;
+package wineplotstracker.wineplotstrackerapp;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
